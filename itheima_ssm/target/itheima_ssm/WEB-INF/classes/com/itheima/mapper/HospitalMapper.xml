@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.HospitalMapper">
+
+    <resultMap id="findAllPatient" type="patient">
+        <id property="id" column="pid"/>
+        <result property="name" column="pname"/>
+        <result property="gender" column="gender"/>
+        <result property="did" column="did"/>
+        <collection property="dept" ofType="com.itheima.domain.Dept">
+            <id property="id" column="did"/>
+            <result property="name" column="dname"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="findAllDept" resultType="dept">
+        select * from dept
+    </select>
+
+    <insert id="savePatient" parameterType="patient">
+        insert into patient(name,gender,did) values(#{name},#{gender},#{did})
+    </insert>
+
+    <select id="findAllPatient" parameterType="string" resultMap="findAllPatient">
+        SELECT *,p.id pid ,p.name pname,d.name dname FROM patient p,dept d WHERE p.did=d.id
+
+
+        <if test="value!=null">
+            AND  p.name LIKE "%"#{value}"%"
+        </if>
+
+        <if test="true">
+            order by p.id
+        </if>
+    </select>
+
+</mapper>
